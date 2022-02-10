@@ -1,0 +1,30 @@
+.leaflet-container {
+  width: 100%;
+  height: 70vh;
+}
+
+.postlist {
+  position: fixed;
+  padding: 10px;
+  width: 100%;
+  height: 1000px;
+  /* background-color: bisque; */
+}
+
+.postcontent {
+  height: 1000px;
+}
+
+.postcomment {
+  position: fixed;
+  top: 70px;
+  width: 100%;
+  height: 1000px;
+}
+p {
+  word-wrap: break-word;
+}
+
+.spacer5 {
+  height: 20px;
+}
