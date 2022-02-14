@@ -16,20 +16,18 @@ import moment from "moment";
 const ActiveCases = ({ mapData, graphData, date }) => {
   console.log(mapData, graphData);
 
-  const age = graphData["demography"]["age"];
-  console.log(age);
-
   // Good reference: https://sqlite.in/?qa=352263/&show=352264
 
   const [newdata, setNewData] = useState([]);
   const [phuName, setPhuName] = useState("Ontario");
 
   const d =
-    graphData["active"] === undefined
+    graphData["epi"] === undefined
       ? ""
-      : graphData["active"][phuName] === undefined
+      : graphData["epi"][phuName] === undefined
       ? ""
-      : graphData["active"][phuName];
+      : graphData["epi"][phuName];
+
   console.log(d);
 
   useEffect(() => {
@@ -37,11 +35,9 @@ const ActiveCases = ({ mapData, graphData, date }) => {
     console.log(d.length);
     for (let i = 0; i < d.length; i++) {
       const newdate = moment(new Date(d[i]["file_date"])).unix();
-      // console.log(newdate);
       datesAlreadyListed.push(newdate);
       d[i].newdate = newdate;
       const year = d[i]["file_date"].split("-")[0].substring(0, 4);
-      // console.log(year);
       if (!datesAlreadyListed.includes(year)) {
         datesAlreadyListed.push(year);
         d[i].year = year;
@@ -55,7 +51,7 @@ const ActiveCases = ({ mapData, graphData, date }) => {
   const yes = date === undefined ? "" : date.toLocaleDateString("en-CA");
   console.log(yes);
 
-  const acON = mapData.active;
+  const acON = mapData;
 
   var length = Object.keys(acON).length;
 
@@ -64,14 +60,13 @@ const ActiveCases = ({ mapData, graphData, date }) => {
     layer.bindPopup(phuName);
     layer.on({
       click: (e) => {
-        console.log(e.target);
         setPhuName(phuName.toUpperCase());
       },
     });
   };
 
   console.log(phuName);
-  console.log(graphData["active"][phuName]);
+  // console.log(graphData["active"][phuName]);
 
   function getColor(d) {
     return d > 1000000
@@ -92,8 +87,9 @@ const ActiveCases = ({ mapData, graphData, date }) => {
   }
 
   function style(feature) {
+    // console.log(feature.properties.epidata['active_cases']['2020-04-01'])
     return {
-      fillColor: getColor(feature.properties[yes]),
+      fillColor: getColor(feature.properties.epidata['active_cases'][yes]),
       weight: 2,
       opacity: 1,
       color: "white",

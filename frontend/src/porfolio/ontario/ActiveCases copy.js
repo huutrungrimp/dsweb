@@ -9,11 +9,16 @@ import {
   Tooltip,
   Brush,
 } from "recharts";
+
 import { useState, useEffect } from "react";
 import moment from "moment";
 
 const ActiveCases = ({ mapData, graphData, date }) => {
   console.log(mapData, graphData);
+
+  // const age = graphData["demography"]["age"];
+  // console.log(age);
+
   // Good reference: https://sqlite.in/?qa=352263/&show=352264
 
   const [newdata, setNewData] = useState([]);
@@ -50,16 +55,18 @@ const ActiveCases = ({ mapData, graphData, date }) => {
   const yes = date === undefined ? "" : date.toLocaleDateString("en-CA");
   console.log(yes);
 
-  const acON = mapData.active;
+  const acON = mapData.map;
+  // console.log(acON)
 
   var length = Object.keys(acON).length;
+  // var length = 0;
 
   const singlephu = (feature, layer) => {
     const phuName = feature.properties.phu_name;
     layer.bindPopup(phuName);
     layer.on({
       click: (e) => {
-        console.log(e.target);
+        // console.log(e.target);
         setPhuName(phuName.toUpperCase());
       },
     });
@@ -87,8 +94,9 @@ const ActiveCases = ({ mapData, graphData, date }) => {
   }
 
   function style(feature) {
+    // console.log(feature.properties.epidata['active_cases']['2020-04-01'])
     return {
-      fillColor: getColor(feature.properties[yes]),
+      fillColor: getColor(feature.properties.epidata['active_cases'][yes]),
       weight: 2,
       opacity: 1,
       color: "white",
@@ -131,40 +139,43 @@ const ActiveCases = ({ mapData, graphData, date }) => {
           </MapContainer>
         </Col>
         <Col xs={12} sm={12} md={6} lg={6}>
-          {/* <h6>Covid-19 trend reported by {phuName}</h6> */}
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart width={150} height={40} data={newdata}>
-              <Bar dataKey="active_cases" fill="red" />
-              <XAxis
-                xAxisId={0}
-                dataKey="file_date"
-                interval="preserveEnd"
-                minTickGap={50}
-                style={{
-                  fontSize: "15px",
-                  fontFamily: "Times New Roman",
-                }}
-              />
-              <XAxis
-                dataKey="newdate"
-                xAxisId={5}
-                tickFormatter={(tick) => formatXAxis(tick)}
-                type={"category"}
-                tickSize={1}
-                strokeWidth={1}
-                // strokeColor='red'
-                strokeDasharray="4"
-                minTickGap={50}
-                style={{
-                  fontSize: "1rem",
-                  fontFamily: "Times New Roman",
-                }}
-              />
-              <YAxis tickFormatter={(tick) => formatYAxis(tick)} />
-              <Tooltip />
-              <Brush dataKey="name" height={20} stroke="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div style={{ width: "100%", height: "550px" }}>
+            <h6 style={{ textAlign: "center" }}>Covid-19 Trend reported by</h6>
+            <h6 style={{ textAlign: "center" }}>{phuName} PHU</h6>
+            <ResponsiveContainer width="100%" height={500}>
+              <BarChart width={150} height={40} data={newdata}>
+                <Bar dataKey="active_cases" fill="#c94f1a" />
+                <XAxis
+                  xAxisId={0}
+                  dataKey="file_date"
+                  interval="preserveEnd"
+                  minTickGap={50}
+                  style={{
+                    fontSize: "15px",
+                    fontFamily: "Times New Roman",
+                  }}
+                />
+                <XAxis
+                  dataKey="newdate"
+                  xAxisId={5}
+                  tickFormatter={(tick) => formatXAxis(tick)}
+                  type={"category"}
+                  tickSize={1}
+                  strokeWidth={1}
+                  // strokeColor='red'
+                  strokeDasharray="4"
+                  minTickGap={50}
+                  style={{
+                    fontSize: "1rem",
+                    fontFamily: "Times New Roman",
+                  }}
+                />
+                <YAxis tickFormatter={(tick) => formatYAxis(tick)} />
+                <Tooltip />
+                <Brush dataKey="name" height={20} stroke="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </Col>
       </Row>
     </Container>

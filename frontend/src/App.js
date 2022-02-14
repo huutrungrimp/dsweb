@@ -9,14 +9,8 @@ import DashBoardON from "./porfolio/ontario/DashBoardON";
 import {
   GetPosts,
   EpiDemographyON,
-  ConfirmMapDataON,
-  ActiveMapDataON,
-  DeathMapDataON,
-  ConfirmGraphDataON,
-  ActiveGraphDataON,
-  DeathGraphDataON,
-  RecoveryGraphDataON,
-  RecoveryMapDataON,
+  EpiGraphON,
+  EpiMapON
 } from "./data/DataSourcesON";
 import Test from "./porfolio/ontario/Test";
 
@@ -25,22 +19,13 @@ function App() {
   console.log(GetPosts());
   // const posts = GetPosts();
 
-  console.log(ConfirmMapDataON())
 
   const graphData = {
-    confirm: ConfirmGraphDataON(),
-    demography: EpiDemographyON(),
-    active: ActiveGraphDataON(),
-    death: DeathGraphDataON(),
-    resolved: RecoveryGraphDataON(),
-  };
+    'epi': EpiGraphON(),
+    'demograph': EpiDemographyON()
+  }
 
-  const mapData = {
-    confirm: ConfirmMapDataON(),
-    active: ActiveMapDataON(),
-    death: DeathMapDataON(),
-    resolved: RecoveryMapDataON(),
-  };
+  const mapData = EpiMapON()
 
   const homeSec = { siteSec: "block", portfolioSec: "block", postSec: "none" };
   const portfolioSec = {

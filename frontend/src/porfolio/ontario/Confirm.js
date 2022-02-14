@@ -8,16 +8,24 @@ import {
   YAxis,
   Tooltip,
   Brush,
+  LineChart,
+  Line,
+  CartesianGrid,
+  Legend,
 } from "recharts";
 
 import { useState, useEffect } from "react";
 import moment from "moment";
 
 const Confirm = ({ mapData, graphData, date }) => {
-  console.log(mapData, graphData);
-
-  const age = graphData["demography"]["age"];
-  console.log(age);
+  console.log(graphData);
+  const demograph =
+    graphData === undefined
+      ? ""
+      : graphData.demograph === undefined
+      ? ""
+      : graphData.demograph.age;
+  console.log(demograph);
 
   // Good reference: https://sqlite.in/?qa=352263/&show=352264
 
@@ -25,14 +33,14 @@ const Confirm = ({ mapData, graphData, date }) => {
   const [phuName, setPhuName] = useState("Ontario");
 
   const d =
-    graphData["confirm"] === undefined
+    graphData["epi"] === undefined
       ? ""
-      : graphData["confirm"][phuName] === undefined
+      : graphData["epi"][phuName] === undefined
       ? ""
-      : graphData["confirm"][phuName];
+      : graphData["epi"][phuName];
   console.log(d);
 
-  console.log(d)
+  console.log(d);
 
   useEffect(() => {
     const datesAlreadyListed = [];
@@ -57,7 +65,7 @@ const Confirm = ({ mapData, graphData, date }) => {
   const yes = date === undefined ? "" : date.toLocaleDateString("en-CA");
   console.log(yes);
 
-  const confirm = mapData.confirm;
+  const confirm = mapData;
 
   var length = Object.keys(confirm).length;
 
@@ -71,9 +79,6 @@ const Confirm = ({ mapData, graphData, date }) => {
       },
     });
   };
-
-  console.log(phuName);
-  console.log(graphData["confirm"][phuName]);
 
   function getColor(d) {
     return d > 1000000
@@ -95,7 +100,7 @@ const Confirm = ({ mapData, graphData, date }) => {
 
   function style(feature) {
     return {
-      fillColor: getColor(feature.properties[yes]),
+      fillColor: getColor(feature.properties.epidata["confirmed"][yes]),
       weight: 2,
       opacity: 1,
       color: "white",
@@ -138,10 +143,10 @@ const Confirm = ({ mapData, graphData, date }) => {
           </MapContainer>
         </Col>
         <Col xs={12} sm={12} md={6} lg={6}>
-          <div style={{ width: "100%", height: "550px" }}>
+          <div style={{ width: "100%", height: "400px" }}>
             <h6 style={{ textAlign: "center" }}>Covid-19 Trend reported by</h6>
             <h6 style={{ textAlign: "center" }}>{phuName} PHU</h6>
-            <ResponsiveContainer width="100%" height={500}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart width={150} height={40} data={newdata}>
                 <Bar dataKey="confirmed" fill="#a85632" />
                 <XAxis
@@ -173,6 +178,80 @@ const Confirm = ({ mapData, graphData, date }) => {
                 <Tooltip />
                 <Brush dataKey="name" height={20} stroke="#8884d8" />
               </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div style={{ width: "100%", height: "350px" }}>
+            <h6 style={{ textAlign: "center" }}>Covid-19 Trend by age groups</h6>
+
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart
+                width={500}
+                height={300}
+                data={demograph}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="Case_Reported_Date" minTickGap={50} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="20s"
+                  stroke="red"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="30s"
+                  stroke="green"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="40s"
+                  stroke="blue"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="50s"
+                  stroke="#92a314"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="60s"
+                  stroke="purple"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="70s"
+                  stroke="grey"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="80z"
+                  stroke="orange"
+                  dot={false}
+                  activeDot={{ r: 8 }}
+                />
+                <Line type="monotone" dataKey="90s" stroke="#82ca9d" />
+                {/* <Line type="monotone" dataKey="UNKNOWN" stroke="#82ca9d" /> */}
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </Col>

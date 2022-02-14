@@ -16,34 +16,28 @@ import moment from "moment";
 const Deaths = ({ mapData, graphData, date }) => {
   console.log(mapData, graphData);
 
-  const age = graphData["demography"]["age"];
-  console.log(age);
-
   // Good reference: https://sqlite.in/?qa=352263/&show=352264
 
   const [newdata, setNewData] = useState([]);
   const [phuName, setPhuName] = useState("Ontario");
 
   const d =
-    graphData["death"] === undefined
+    graphData["epi"] === undefined
       ? ""
-      : graphData["death"][phuName] === undefined
+      : graphData["epi"][phuName] === undefined
       ? ""
-      : graphData["death"][phuName];
-  console.log(d);
+      : graphData["epi"][phuName];
 
-  console.log(d)
+  console.log(d);
 
   useEffect(() => {
     const datesAlreadyListed = [];
     console.log(d.length);
     for (let i = 0; i < d.length; i++) {
       const newdate = moment(new Date(d[i]["file_date"])).unix();
-      // console.log(newdate);
       datesAlreadyListed.push(newdate);
       d[i].newdate = newdate;
       const year = d[i]["file_date"].split("-")[0].substring(0, 4);
-      // console.log(year);
       if (!datesAlreadyListed.includes(year)) {
         datesAlreadyListed.push(year);
         d[i].year = year;
@@ -57,23 +51,21 @@ const Deaths = ({ mapData, graphData, date }) => {
   const yes = date === undefined ? "" : date.toLocaleDateString("en-CA");
   console.log(yes);
 
-  const death = mapData.death;
+  const deaths = mapData;
 
-  var length = Object.keys(death).length;
+  var length = Object.keys(deaths).length;
 
   const singlephu = (feature, layer) => {
     const phuName = feature.properties.phu_name;
     layer.bindPopup(phuName);
     layer.on({
       click: (e) => {
-        console.log(e.target);
         setPhuName(phuName.toUpperCase());
       },
     });
   };
 
   console.log(phuName);
-  console.log(graphData["death"][phuName]);
 
   function getColor(d) {
     return d > 1000000
@@ -95,7 +87,7 @@ const Deaths = ({ mapData, graphData, date }) => {
 
   function style(feature) {
     return {
-      fillColor: getColor(feature.properties[yes]),
+      fillColor: getColor(feature.properties.epidata['deaths'][yes]),
       weight: 2,
       opacity: 1,
       color: "white",
@@ -132,7 +124,7 @@ const Deaths = ({ mapData, graphData, date }) => {
             />
             <GeoJSON
               style={style}
-              data={death === undefined ? "" : death}
+              data={deaths === undefined ? "" : deaths}
               onEachFeature={singlephu}
             />
           </MapContainer>
@@ -143,7 +135,7 @@ const Deaths = ({ mapData, graphData, date }) => {
             <h6 style={{ textAlign: "center" }}>{phuName} PHU</h6>
             <ResponsiveContainer width="100%" height={500}>
               <BarChart width={150} height={40} data={newdata}>
-                <Bar dataKey="deaths" fill="red" />
+                <Bar dataKey="deaths" fill="#c94f1a" />
                 <XAxis
                   xAxisId={0}
                   dataKey="file_date"
